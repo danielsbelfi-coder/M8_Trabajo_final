@@ -8,7 +8,11 @@ const Part = sequelize.define('Part', {
         },
         condicion: {
             type: DataTypes.STRING,
-            allowNull: false,        
+            allowNull: false,      
+        },
+        imagenUrl: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
 })
 

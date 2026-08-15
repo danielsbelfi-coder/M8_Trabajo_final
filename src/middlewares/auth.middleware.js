@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 
-const SECRET_KEY = "esta-es-una-contraseña-super-segura"
+// const SECRET_KEY = "esta-es-una-contraseña-super-segura"
 
 const tokenVerifier = (req, res, next) => {
     try {
@@ -20,8 +20,10 @@ const tokenVerifier = (req, res, next) => {
 
         next()
     } catch (error) {
-        res.status(403).json({
+        res.status(401).json({
             error: "Acceso denegado. Token no proporcionado o inválido."
         })
     }
 }
+
+module.exports = tokenVerifier

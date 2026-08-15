@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 
 const { User } = require("../models");
 const generateToken = require("../util/generateToken");
+
+
 const register = async (req, res) => {
   try {
     const { alias, email, password } = req.body;
@@ -78,7 +80,7 @@ const login = async (req, res) => {
       });
     }
 
-const token = generateToken;
+const token = generateToken(user.id);
 
     return res.status(200).json({
       message: "Inicio de sesión exitoso.",
@@ -92,6 +94,7 @@ const token = generateToken;
     });
   }
 };
+
 
 module.exports = {
   register,

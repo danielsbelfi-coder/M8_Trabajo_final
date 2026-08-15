@@ -1,15 +1,16 @@
 const express = require("express");
 const cors = require('cors');
 const authRoutes = require('./src/routes/auth.routes')
-
-
+const consoleRoutes = require("./src/routes/console.routes.js")
+const partRoutes = require("./src/routes/part.routes.js")
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-app.use('/uploads' , express.static('src/upload'))
-app.use('/api/auth', authRoutes)
+app.use("/consoles", consoleRoutes)
+app.use("/upload", express.static("src/upload"))
+app.use('/auth', authRoutes)
+app.use("/parts", partRoutes)
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -17,5 +18,7 @@ app.get("/", (req, res) => {
     message: "API RetroStock funcionando correctamente.",
   });
 });
+
+
 
 module.exports = app
