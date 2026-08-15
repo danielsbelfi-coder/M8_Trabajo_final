@@ -8,9 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/consoles", consoleRoutes)
-app.use("/upload", express.static("src/upload"))
 app.use('/auth', authRoutes)
 app.use("/parts", partRoutes)
+app.use("/upload", express.static("upload")); 
 
 app.get("/", (req, res) => {
   res.status(200).json({
