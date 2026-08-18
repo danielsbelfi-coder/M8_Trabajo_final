@@ -27,10 +27,10 @@ const getPartsByConsole = async (req, res) => {
 
 const createPart = async (req, res) => {
   try {
-    const { nombre, condicion, consoleId } = req.body;
+    const { nombre, condicion, consoleId, contacto } = req.body;
 
-    if (!nombre || !condicion || !consoleId) {
-      const error = new Error("Nombre, condición y consoleId son obligatorios.");
+    if (!nombre || !condicion || !consoleId || !contacto) {
+      const error = new Error("Nombre, condición y consoleId y contacto son obligatorios.");
       error.status = 400;
       throw error;
     }
@@ -49,6 +49,7 @@ const createPart = async (req, res) => {
       condicion,
       consoleId,
       imagenUrl,
+      contacto,
     });
 
     return res.status(201).json({
@@ -64,7 +65,34 @@ const createPart = async (req, res) => {
   }
 };
 
+// DELETE /parts/:id
+const deletePart = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const part = await Part.findByPk(id);
+
+    if (!part) {
+      const error = new Error("El repuesto indicado no existe.");
+      error.status = 404;
+      throw error;
+    }
+
+    await part.destroy();
+
+    return res.status(200).json({
+      ok: true,
+      message: "Repuesto eliminado correctamente.",
+    });
+  } catch (error) {
+    return res.status(error.status || 500).json({
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getPartsByConsole,
   createPart,
+  deletePart
 };

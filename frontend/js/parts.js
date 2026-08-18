@@ -30,10 +30,10 @@ async function cargarPartes() {
 }
 
 function renderizarPartes(partes) {
-    listaPartes.innerHtml = "";
+    listaPartes.innerHTML = "";
 
     if (partes.length === 0) {
-        listarPartes.innerHtml = `<p class="text-muted">Aún no hay repuestos registrados para esta consola.</p>`;
+        listaPartes.innerHTML = `<p class="text-muted">Aún no hay repuestos registrados para esta consola.</p>`;
         return;
     }
 
@@ -41,7 +41,7 @@ function renderizarPartes(partes) {
         const col = document.createElement("div");
         col.className = "col-md-4";
 
-        const imagenSrc = parte.imageUrl
+        const imagenSrc = parte.imagenUrl
             ? `${API_URL}${parte.imagenUrl}`
             : "https://placehold.co/300x180?text=Sin+imagen";
 
@@ -55,12 +55,47 @@ function renderizarPartes(partes) {
               ${parte.condicion}
             </span>
           </p>
+          <p class="card-text">
+            <small class="text-muted">📞 ${parte.contacto || "Sin contacto"}</small>
+          </p>
+          <button class="btn btn-outline-danger btn-sm w-100 btn-eliminar" data-id="${parte.id}">
+            Eliminar
+          </button>
         </div>
       </div>
     `;
 
-    listaPartes.appendChild(col)
+        listaPartes.appendChild(col)
     })
+
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+        btn.addEventListener("click", () => eliminarParte(btn.dataset.id));
+    });
+}
+
+async function eliminarParte(id) {
+    const confirmar = confirm("¿Seguro que quieres eliminar este repuesto? Esta acción no se puede deshacer.");
+    if (!confirmar) return;
+
+    try {
+        const response = await fetch(`${API_URL}/parts/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${obtenerToken()}`,
+            },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Error al eliminar el repuesto");
+        }
+
+        cargarPartes();
+
+    } catch (error) {
+        mostrarError(error.message);
+    }
 }
 
 formParte.addEventListener("submit", async (e) => {
@@ -69,11 +104,13 @@ formParte.addEventListener("submit", async (e) => {
     const nombre = document.getElementById("nombre").value;
     const condicion = document.getElementById("condicion").value;
     const imagenInput = document.getElementById("imagen");
+    const contacto = document.getElementById("contacto").value;
 
     const formData = new FormData();
     formData.append("nombre", nombre)
     formData.append("condicion", condicion)
-    formData.append("consoleId", consoleId);
+    formData.append("consoleId", consoleId)
+    formData.append("contacto", contacto);
 
     if (imagenInput.files[0]) {
         formData.append("imagen", imagenInput.files[0])
@@ -90,7 +127,7 @@ formParte.addEventListener("submit", async (e) => {
 
         const data = await response.json();
 
-        if(!response.ok) {
+        if (!response.ok) {
             throw new Error(data.error || "Error al crear el repuesto")
         }
 
@@ -102,7 +139,7 @@ formParte.addEventListener("submit", async (e) => {
         const errorModal = document.getElementById("errorModalParte");
         errorModal.textContent = error.message;
         errorModal.classList.remove("d-none")
-        
+
     }
 })
 

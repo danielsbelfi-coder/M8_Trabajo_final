@@ -13,6 +13,10 @@ const Part = sequelize.define('Part', {
         imagenUrl: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        contacto: {
+            type: DataTypes.STRING(12),
+            allowNull: false
         }
 })
 
