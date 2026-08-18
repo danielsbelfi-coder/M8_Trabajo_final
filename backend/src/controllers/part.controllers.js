@@ -65,7 +65,6 @@ const createPart = async (req, res) => {
   }
 };
 
-// DELETE /parts/:id
 const deletePart = async (req, res) => {
   try {
     const { id } = req.params;
